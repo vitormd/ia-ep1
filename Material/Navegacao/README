@@ -1,0 +1,114 @@
+Os dois arquivos necessários para realizar a parte A do EP são ambiente1.mat e ambiente2.mat. Em cada um desses arquivos existe um MDP sob o qual deve-se testar os algoritmos Value Iteration e Policy Iteration. Também está disponível um ambiente menor, com apenas 18 estados, para realizar testes iniciais. 
+
+Os ambientes foram construídos utilizando os mapas nos arquivos mapa1.txt, mapa2.txt e mapaTeste.txt. Neste arquivo: 'r' indica ROOM, 'c' indica CORRIDOR, 'd' indica DOOR, '-' e '|' indica parede, e '.' é utilizado apenas para compatibilização com paredes ao lado ou acima. 
+
+Os ambientes foram gerados utilizando o script geraAmbientes.m.
+
+O ambiente possui 8 ações, embora não seja necessário considerar a semântica das mesmas, segue abaixo a semântica de cada ação:
+ação 1 - vá para espaço vazio na direção oposta a meta
+ação 2 - vá para a porta na direção oposta a meta
+ação 3 - vá para a sala na direção oposta a meta
+ação 4 - vá para o corredor na direção oposta a meta
+ação 5 - vá para espaço vazio na direção da meta
+ação 6 - vá para a porta na direção da meta
+ação 7 - vá para a sala na direção da meta
+ação 8 - vá para o corredor na direção da meta
+
+Exemplo de uso:
+
+>> load ambienteTeste.mat
+>> MDP
+MDP.S
+MDP.A
+
+MDP = 
+
+        S: 18			% quantidade de estados no ambiente
+        A: 8			% quantidade de ações disponíveis
+        T: {1x8 cell}		% função de transição
+        R: [18x8 double]	% função recompensa
+    bInit: [18x1 double]	% probabilidade de iniciar em cada estado
+
+
+ans =
+
+    18
+
+
+ans =
+
+     8
+
+>> MDP.T{5}(7,8)		% probabilidade de transitar do estado 7 para o estado 8 quando a ação 5 é executada
+
+ans =
+
+   (1,1)       0.9000
+
+>> MDP.T{1}			% matriz de transição para a ação 1 com representação esparsa
+
+ans =
+
+   (1,1)       1.0000
+   (2,1)       0.4500		% probabilidade de 0.45 de transitar do estado 2 para o estado 1 quando a ação 1 é executada
+   (7,1)       0.4500
+   (2,2)       0.1000
+   (2,3)       0.4500
+   (3,3)       1.0000
+   (9,3)       0.4500
+   (4,4)       0.1000
+  (10,4)       0.3000
+   (4,5)       0.9000
+   (5,5)       0.1000
+  (11,5)       0.3000
+   (5,6)       0.9000
+   (6,6)       1.0000
+  (12,6)       0.4500
+   (7,7)       0.1000
+   (8,8)       1.0000		% probabilidade de 1.00 de transitar do estado 8 para o estado 8 quando a ação 1 é executada, 8 é o estado meta
+   (9,9)       0.1000
+  (10,10)      0.1000
+  (10,11)      0.3000
+  (11,11)      0.1000
+  (11,12)      0.3000
+  (12,12)      0.1000
+   (7,13)      0.4500
+  (13,13)      1.0000
+  (14,13)      0.4500
+  (14,14)      0.1000
+   (9,15)      0.4500
+  (14,15)      0.4500
+  (15,15)      1.0000
+  (10,16)      0.3000
+  (16,16)      0.1000
+  (11,17)      0.3000
+  (16,17)      0.9000
+  (17,17)      0.1000
+  (12,18)      0.4500
+  (17,18)      0.9000
+  (18,18)      1.0000
+
+>> MDP.R			% função de recompensa com representação completa
+
+ans =
+
+     0     0     0     0     0     0     0     0
+     0     0     0     0     0     0     0     0
+     0     0     0     0     0     0     0     0
+     0     0     0     0     0     0     0     0
+     0     0     0     0     0     0     0     0
+     0     0     0     0     0     0     0     0
+     0     0     0     0     0     0     0     0
+     1     1     1     1     1     1     1     1	% recompensa para o estado 8 que representa a meta
+     0     0     0     0     0     0     0     0
+     0     0     0     0     0     0     0     0
+     0     0     0     0     0     0     0     0
+     0     0     0     0     0     0     0     0
+     0     0     0     0     0     0     0     0
+     0     0     0     0     0     0     0     0
+     0     0     0     0     0     0     0     0
+     0     0     0     0     0     0     0     0
+     0     0     0     0     0     0     0     0
+     0     0     0     0     0     0     0     0
+
+>> 

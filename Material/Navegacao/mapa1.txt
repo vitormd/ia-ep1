@@ -1,0 +1,15 @@
+9
+15
+---------------------
+|rrr|rrr|rrr|rrr|rrr|
+|rrr|rrrdrrr|rrrdrrr|
+|rrr|rrr|rrr|rrr|rrr|
+--d-------d---d-----|
+|rrr|ccc.ccc.ccc|rrr|
+|rrrdccc.ccc.ccc|rrr|
+|rrr|ccc.ccc.ccc|rrr|
+--d----------...--d-|
+|rrr|rrr|rrr|ccc|rrr|
+|rrr|rrrdrrrdcccdrrr|
+|rrr|rrr|rrr|ccc|rrr|
+---------------------
