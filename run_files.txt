@@ -1,0 +1,10 @@
+run MDPtoolbox/mdp_bellman_operator.m
+run MDPtoolbox/mdp_computePpolicyPRpolicy.m
+run MDPtoolbox/mdp_computePR.m
+run MDPtoolbox/mdp_eval_policy_iterative.m
+run MDPtoolbox/mdp_eval_policy_matrix.m
+run MDPtoolbox/mdp_policy_iteration.m
+run MDPtoolbox/mdp_span.m
+run MDPtoolbox/mdp_value_iteration.m
+run MDPtoolbox/mdp_value_iteration_bound_iter.m
+run MDPtoolbox/mdp_verbose.m
