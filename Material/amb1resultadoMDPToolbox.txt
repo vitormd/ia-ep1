@@ -1,0 +1,5 @@
+fid = fopen('polip.txt', 'wt'); % Open for writing
+for i=1:MDP.S
+   fprintf(fid, '%d\n', polip(i));
+end
+fclose(fid);
