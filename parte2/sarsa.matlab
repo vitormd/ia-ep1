@@ -1,4 +1,4 @@
-function [Q, V, politica, E] = sarsa(T, R, S, A, gama, taxa_aprendizado, maxIter, taxa_eploracao, lambda)
+function [Q, V, politica, E] = sarsa(T, R, S, A, gama, taxa_aprendizado, maxIter, taxa_exploracao, lambda)
 
   N=maxIter;      
   Q = zeros(S,A);
@@ -12,18 +12,11 @@ function [Q, V, politica, E] = sarsa(T, R, S, A, gama, taxa_aprendizado, maxIter
       s = randi([1,S]);
     end;
 
-    % Melhor açao, se dentro de x%
-    % Caso contrario, aleatorio
-    probabilidade = rand(1);
-    if (probabilidade < taxa_eploracao)
-      [nil, a] = max(Q(s,:));
-    else
-      a = randi([1,A]);
-    end;
+    a = acaoEGreedy(s, taxa_exploracao, Q, A);
 
-    % % Decide o proximo s_novo observando as recompensas associadas as acoes (s, s', a)
     s_novo = find(cumsum(T{a}(s,:)) > rand, 1, 'first');
-    [nil, a_novo] = max(R(s_novo,:));
+    a_novo = acaoEGreedy(s_novo, taxa_exploracao, Q, A);
+
     % % Recompensa atual
     r = R(s,a); 
 
@@ -43,4 +36,13 @@ function [Q, V, politica, E] = sarsa(T, R, S, A, gama, taxa_aprendizado, maxIter
     s = s_novo; % Atualiza o estado atual
   end;
   [V, politica] = max(Q,[],2);
+end;
+
+function a_novo = acaoEGreedy(s, taxa_exploracao, Q, A)
+  probabilidade = rand(1);
+  if (probabilidade < taxa_exploracao)
+    [nil, a_novo] = max(Q(s,:));
+  else
+    a_novo = randi([1,A]);
+  end;
 end;

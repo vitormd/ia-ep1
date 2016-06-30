@@ -1,0 +1,155 @@
+Os arquivos com os problemas para realizar a parte A do EP são problema1.mat, problema2.mat e problema3.mat, cada uma aumentando o tamanho do espaço de estados. Em cada um desses arquivos existe uma estrutura M que possui a definição do problema. Esses arquivos foram criados utilizando o script geraProblemas.m
+
+>> load problema1
+>> M
+
+M = 
+
+              sucesso: 0.9000	% chance do jogador carregar a bola com ele quando em posse da bola
+    jogadoravancaProb: 0.9500	% chance do jogador avançar na direção escolhida
+          acertaChute: 0.9000	% chance da bola andar com a velocidade atual, caso contrário velocidade reduz
+         recuperaBola: 0.5000	% chance de recuperar a bola com a ação TACKLE quando agente esta adjacente à bola
+               desvio: 0.5000	% chance da bola andar em cada eixo xy quando realiza chute na diagonal
+       velocidadeBola: 2	% velocidade impressa na bola após um chute
+             posChute: 3	% quantidade máxima possível de deslocamente da bola após um chute, em média será menos que essa quantidade
+            goalWidth: 1	% a largura do gol é de (2*goalWidth+1)
+            cellWidth: 3	% usada apenas graficamente
+                delay: 0.0500	% usada apenas graficamente
+                   Nx: 11	% comprimento do campo
+                   Ny: 7	% largura do campo
+                   Ta: 1	% jogadores no time A
+                   Tb: 1	% jogadores no time B
+              horizon: 54	% horizonte de cada episódio
+
+>> 
+
+Essa estrutura pode ser utilizada para criar um gerador de simulador que é implementado na classe 'state'.
+
+>> load problema1
+>> S = state(M);
+>> properties(S)
+
+Properties for class state:
+
+    B		% estrutura para coordenadas da bola
+    P		% estrutura para coordenadas de cada jogador, começando pelos jogadores do time A
+    nP		% número de jogadores em campo
+    B_direct	% direção da bola: 0->parado, 1->N, 2->S, 3->L, 4->O, 5->NE, 6->SE, 7->NO, 8->SO
+    B_speed	% velocidade da bola
+    limites	% limite para cada fator retornado pelo método 'fatora' (ver mais informação abaixo)
+    M		% estrutura para a configuração do jogo
+
+>> 
+
+Abaixo seguem informações para alguns usos importantes da classe 'state'.
+
+>> S.fatora() 			% retorna os fatores que representam o estado na seguinte ordem: B.x, B.y, B_direct+1, B_speed+1, P{1}.x, P{1}.y, P{2}.x, P{2}.y
+
+ans =
+
+     8     5     1     1     4     1    10     7
+
+>> S.limites % aqui pode-se ver o limite máximo de cada fator
+
+ans =
+
+    11     7     9     3    11     7    11     7
+
+>> S.espalhamentoGoal(M,true) 	% coloca o jogo na posição inicial utilizada no EP (sempre o seu jogador, time A, começa com a bola na mesma posição)
+>> S.fatora() 			% notem que a bola está parada e na mesma posição que o jogador 1
+
+ans =
+
+     6     4     1     1     6     4     9     4  
+
+>> 
+
+O agente possui disponível 13 ações:
+agente vai para o NORTE (1), SUL (2), LESTE (3), OESTE (4)
+agente chuta para N (5), S (6), L (7), O  (8), NE (9), SE (10), NO (11), SO (12)
+agente tenta tomar a bola TACKLE (13)
+Uma ação pode ser executada no gerador com o método 'move' retorna a recompensa recebida (+1 gol do time A, -1 gol do time B, 0 não houve gol).
+
+>> load problema1
+>> S = state(M);
+>> S.espalhamentoGoal(M,true)
+>> S.espalhamentoGoal(M,true);
+>> S.fatora()
+
+ans =
+
+     6     4     1     1     6     4     9     4
+
+>> S.move([1 4])		% o método recebe como entrada um vetor com a ação de cada jogador, seja do time A ou do time B, neste caso jogador 1 executou ir para o norte e jogador 2 ir para oeste
+
+ans =
+
+     0
+
+>> S.fatora()			% note que o jogador 1 andou para o norte, a bola acompanhou o jogador 1, mas a ação do jogador 2 não foi bem sucedida
+
+ans =
+
+     6     3     1     1     6     3     9     4
+
+>> S.move([1 4])
+
+ans =
+
+     0
+
+>> S.fatora()			% agora a ação do jogador 2 foi bem sucedida
+
+ans =
+
+     6     2     1     1     6     2     8     4
+
+>> S.move([5 13])		% jogador 1 chuta bola para norte
+
+ans =
+
+     0
+
+>> S.fatora()
+
+ans =
+
+     6     1     2     2     6     2     8     4
+
+>> S.move([13 13])		% jogador 1 tenta o TACKLE, mas não é bem sucedido
+
+ans =
+
+     0
+
+>> S.fatora()
+
+ans =
+
+     6     1     1     1     6     2     8     4
+
+>> S.move([13 13])		% jogador 1 tenta o TACKLE novamente, e agora é bem sucedido
+
+ans =
+
+     0
+
+>> S.fatora()
+
+ans =
+
+     6     2     1     1     6     2     8     4
+
+>> 
+
+Cada uma das formações acima podem ser visualizada graficamentes executando a função 'showGame'
+
+>> showGame( S, M, configJogo(100) )	% configJogo(100) configura um jogo com tempo 100, essa variável é utilizada para controlar o placar do jogo.
+
+Finalmente, o agente implementado deve ser avaliado pelo script 'avaliaProblema'. Este script inicializa 100 execuções de jogos com tempo de 10.000 passos. Onde cada época dura M.horizon ou até alguém fazer gol, voltando para posição inicial (jogador 1 com a bola). Durante a execução pode-se observar o placar de cada execução após cada 1.000 passos. Pode-se escolher ainda entre mostrar o jogo graficamente ou não exibir. Todas essas configurações são realizadas no início do script, assim como o problema a ser considerado.
+
+Deve-se implementar dois métodos no arquivo 'avaliaProblema.m': CriaAgenteA(M) e EscolheAcaoA(nPlayer,agente,sOld,aOld,reward,sNew,notFirst,tempopartida). No arquivo de exemplo foi implementado um agente aleatório.  O jogador contra quem seu agente irá jogar consiste em um agente baseado em regras implementado em um TCC e não deve ser alterado.
+
+>> avaliaProblema		% testa o arquivo de avaliação
+
+
