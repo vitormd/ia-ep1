@@ -1,21 +1,22 @@
-function [Q, V, politica] = q_learning(T, R, S, A, gama, taxa_aprendizado, maxIter, taxa_eploracao)
+function [politica] = q_learning(T, R, S, A, gama, taxa_aprendizado, taxa_exploracao, numAcoes)
 
-  N=maxIter;      
+  N=numAcoes;      
   Q = zeros(S,A);
   estado = randi([1,S]);
+  soma_acoes = [];
+  s=randi([1,S]);
 
-  for n=1:N
-    s=randi([1,S]);
-
-    if (mod(n,S*2)==0);
-      s = randi([1,S]);
+  for n=1:N;
+    s = mod(n, S);
+    if(s==0);
+      s=S;
     end;
 
     a = acaoEGreedy(s, taxa_exploracao, Q, A);
 
     % % Decide o proximo s_novo observando as recompensas associadas as acoes (s, s', a)
     s_novo = find(cumsum(T{a}(s,:)) > rand, 1, 'first');
-  
+
     % % Recompensa atual
     r = R(s,a); 
 

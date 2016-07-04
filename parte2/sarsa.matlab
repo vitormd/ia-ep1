@@ -1,15 +1,14 @@
-function [Q, V, politica, E] = sarsa(T, R, S, A, gama, taxa_aprendizado, maxIter, taxa_exploracao, lambda)
+function [politica] = sarsa(T, R, S, A, gama, taxa_aprendizado, taxa_exploracao, lambda, numAcoes)
 
-  N=maxIter;      
+  N=numAcoes;   
   Q = zeros(S,A);
   E = zeros(S,A);
   estado = randi([1,S]);
 
   for n=1:N
-    s=randi([1,S]);
-
-    if (mod(n,S*2)==0);
-      s = randi([1,S]);
+    s = mod(n, S);
+    if(s==0);
+      s=S;
     end;
 
     a = acaoEGreedy(s, taxa_exploracao, Q, A);
