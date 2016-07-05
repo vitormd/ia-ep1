@@ -20,7 +20,6 @@ function [politica] = sarsa(T, R, S, A, gama, taxa_aprendizado, taxa_exploracao,
     r = R(s,a); 
 
     % Atualiza E(s,a) 
-    delta = r + gama*(Q(s_novo, a_novo)) - Q(s,a);
     for si=1:S;
       for ai=1:A;
         if(si == s && ai == a);
@@ -30,6 +29,8 @@ function [politica] = sarsa(T, R, S, A, gama, taxa_aprendizado, taxa_exploracao,
         end;
       end;
     end;
+
+    delta = r + gama*(Q(s_novo, a_novo)) - Q(s,a);
     Q(s,a) = Q(s,a) + taxa_aprendizado * E(s, a) * delta;
 
     s = s_novo; % Atualiza o estado atual
