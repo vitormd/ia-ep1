@@ -19,7 +19,7 @@ function [politica] = sarsa(T, R, S, A, gama, taxa_aprendizado, taxa_exploracao,
     % % Recompensa atual
     r = R(s,a); 
 
-    % Atualiza Q(s,a) 
+    % Atualiza E(s,a) 
     delta = r + gama*(Q(s_novo, a_novo)) - Q(s,a);
     for si=1:S;
       for ai=1:A;
